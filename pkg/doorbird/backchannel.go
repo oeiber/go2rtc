@@ -87,9 +87,17 @@ func (c *Client) AddTrack(media *core.Media, codec *core.Codec, track *core.Rece
 	return nil
 }
 
+func (c *Client) Close() error {
+	if c.conn != nil {
+		return c.conn.Close()
+	}
+	return nil
+}
+
 func (c *Client) Start() (err error) {
 	// just block until c.conn closed
 	b := make([]byte, 1)
 	_, err = c.conn.Read(b)
+	_ = c.Close() // always close the connection, even on errors
 	return
 }
